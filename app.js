@@ -2,7 +2,7 @@ import "dotenv/config";
 import moment from "moment";
 import fetch from "node-fetch";
 import fs from "fs";
-import { readJsonFile } from "./libs/read-file.js";
+import { extractLatestTimestamps, readJsonFile, writeJson } from "./libs/json-process.js";
 
 let current = moment(new Date());
 
@@ -28,5 +28,7 @@ let dadate = current.format("YYYY-MM-DD");
 // fetchWakaTime(dadate);
 // console.log("current", current.format("YYYY-MM-DD"));
 
-let gg = await readJsonFile("./wakatime-alvin.ictngmail.com-a9b7492e11d446a89da8eb4c7708f9f3.json")
-console.log("da", gg)
+let wakaData = await readJsonFile("./wakatime-alvin.ictngmail.com-a9b7492e11d446a89da8eb4c7708f9f3.json")
+const summary = extractLatestTimestamps(wakaData.days);
+// console.log("da", wakaData.days)
+await writeJson('./output.json', summary); // change this if needed
