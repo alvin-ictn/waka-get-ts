@@ -92,4 +92,8 @@ const updatedData = supabaseData.reduce((acc, curr) => {
     },
   ];
 }, []);
-console.log("updatedData", updatedData);
+
+const { error: upsertError } = await supabase
+.from("wakatime_logs")
+.upsert(updatedData, { onConflict: "name" });
+console.log("updatedData", upsertError);
