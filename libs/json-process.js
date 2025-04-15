@@ -28,6 +28,9 @@ export function extractLatestTimestamps(days) {
     languages: {},
   };
 
+  const earliest = { dependencies: {}, languages: {} };
+  const latest = { dependencies: {}, languages: {} };
+
   for (const day of days) {
     for (const hb of day.heartbeats) {
       const time = Math.floor(hb.time); // Round down to integer unix timestamp
@@ -38,6 +41,21 @@ export function extractLatestTimestamps(days) {
           if (!result.dependencies[dep] || result.dependencies[dep] < time) {
             result.dependencies[dep] = time;
           }
+
+          // Earliest
+          if (
+            !(dep in earliest.dependencies) ||
+            time < earliest.dependencies[dep]
+          ) {
+            earliest.dependencies[dep] = time;
+          }
+          // Latest
+          if (
+            !(dep in latest.dependencies) ||
+            time > latest.dependencies[dep]
+          ) {
+            latest.dependencies[dep] = time;
+          }
         }
       }
 
@@ -47,11 +65,23 @@ export function extractLatestTimestamps(days) {
         if (!result.languages[lang] || result.languages[lang] < time) {
           result.languages[lang] = time;
         }
+        // Earliest
+        if (!(lang in earliest.languages) || time < earliest.languages[lang]) {
+          earliest.languages[lang] = time;
+        }
+        // Latest
+        if (!(lang in latest.languages) || time > latest.languages[lang]) {
+          latest.languages[lang] = time;
+        }
       }
     }
   }
 
-  return result;
+  return {
+    result,
+    earliest,
+    latest
+  };
 }
 
 /**

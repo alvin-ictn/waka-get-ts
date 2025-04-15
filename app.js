@@ -3,6 +3,7 @@ import moment from "moment";
 import fetch from "node-fetch";
 import fs from "fs";
 import { extractLatestTimestamps, readJsonFile, writeJson } from "./libs/json-process.js";
+import { supabase } from "./libs/supabase.js";
 
 let current = moment(new Date());
 
@@ -30,5 +31,16 @@ let dadate = current.format("YYYY-MM-DD");
 
 let wakaData = await readJsonFile("./wakatime-alvin.ictngmail.com-a9b7492e11d446a89da8eb4c7708f9f3.json")
 const summary = extractLatestTimestamps(wakaData.days);
-// console.log("da", wakaData.days)
-await writeJson('./output.json', summary); // change this if needed
+await writeJson('./result.json', summary.result);
+await writeJson('./earliest.json', summary.earliest);
+await writeJson('./latest.json', summary.latest);
+
+
+const { data: supabaseData, error: fetchError } = await supabase
+.from("wakatime_logs")
+.select("*")
+
+console.log("supabaseData", supabaseData)
+
+const test = moment.unix(1618049705).utc().format('YYYY-MM-DDTHH:mm:ss.SSSZ');
+console.log("tes", test)
