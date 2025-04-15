@@ -84,11 +84,11 @@ const updatedData = supabaseData.reduce((acc, curr) => {
       inserted_at: moment
         .unix(combineEarliest[curr.name])
         .utc()
-        .format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        .toISOString(),
       updated_at: moment
         .unix(combineLatest[curr.name])
         .utc()
-        .format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        .toISOString(),
     },
   ];
 }, []);
@@ -96,4 +96,3 @@ const updatedData = supabaseData.reduce((acc, curr) => {
 const { error: upsertError } = await supabase
 .from("wakatime_logs")
 .upsert(updatedData, { onConflict: "name" });
-console.log("updatedData", upsertError);
